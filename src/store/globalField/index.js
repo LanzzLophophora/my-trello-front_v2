@@ -1,0 +1,1 @@
+export { globalField } from './reducer';
