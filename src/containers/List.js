@@ -16,7 +16,7 @@ import {
   setDraggableCard,
   changeListPosition,
   setDraggableListId
-} from '../store/globalField/actions';
+} from '../store/project/actions';
 
 class List extends Component {
 

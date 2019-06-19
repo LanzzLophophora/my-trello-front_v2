@@ -4,7 +4,7 @@ import ItemTypes from './ItemTypes';
 import { Button } from '@material-ui/core';
 import { connect } from 'react-redux';
 
-import { changeListForCard, deleteCard, setDraggableCard } from '../store/globalField/actions';
+import { changeListForCard, deleteCard, setDraggableCard } from '../store/project/actions';
 
 const Card = React.forwardRef(
   ({ value, id, active, listId, lists, draggableCard,

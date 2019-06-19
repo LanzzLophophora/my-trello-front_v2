@@ -1,50 +1,55 @@
-// import firebase from './config/firebase';
+import axios from 'axios';
 
-// const db = firebase.firestore();
+import { defaultUrl } from './config';
 
-export const signIn = (name, password) => {
-  const requestHandler = (resolve, reject) => {
-    firebase.auth().signInWithEmailAndPassword(name, password)
-      .then(data => resolve(data))
-      .catch(error => reject(error))
-  };
-  return new Promise(requestHandler)
+export const signUp = (login, password) => {
+  return axios.post(
+    `${defaultUrl}/signup`,
+    { login, password }
+  )
 };
 
-export const signOut = () => {
-  const requestHandler = (resolve, reject) => {
-    firebase.auth().signOut()
-      .then(data => resolve(data))
-      .catch(error => reject(error.message))
-  };
-  return new Promise(requestHandler)
+export const signIn = (login, password) => {
+  return axios({
+    method: 'get',
+    url: `${defaultUrl}/signin`,
+    headers: {
+      'login': login,
+      'password': password,
+      'Content-Type': 'application/json'
+    }
+  })
 };
 
-export const signUp = (email, password) => {
-  const requestHandler = (resolve, reject) => {
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-      .then(data => resolve(data))
-      .catch(error => reject(error.message))
-  };
-  return new Promise(requestHandler)
+export const getUser = (token) => {
+  return axios({
+    method: 'get',
+    url: `${defaultUrl}/user`,
+    headers: {
+      'authorization': token,
+      'Content-Type': 'application/json'
+    }
+  })
 };
 
-export const getUserName = () => {
-  const requestHandler = (resolve, reject) => {
-    const uid = firebase.auth().currentUser.uid;
-    db.collection("users").doc(`${uid}`).get()
-      .then(data => resolve(data))
-      .catch(error => reject(error.message))
-  };
-  return new Promise(requestHandler)
-};
+// export const signOut = () => {
+//   const requestHandler = (resolve, reject) => {
+//     axios.post(
+//       "http://localhost:5000/api/signup",
+//       { name, password }
+//     )
+//       .then(data => resolve(data))
+//       .catch(error => reject(error.message))
+//   };
+//   return new Promise(requestHandler)
+// };
 
-export const setName = name => {
-  const requestHandler = (resolve, reject) => {
-    const uid = firebase.auth().currentUser.uid;
-    db.collection("users").doc(`${uid}`).set({ name })
-      .then(data => resolve(data))
-      .catch(error => reject(error.message))
-  };
-  return new Promise(requestHandler)
-};
+// export const setName = name => {
+//   const requestHandler = (resolve, reject) => {
+//     const uid = firebase.auth().currentUser.uid;
+//     db.collection("users").doc(`${uid}`).set({ name })
+//       .then(data => resolve(data))
+//       .catch(error => reject(error.message))
+//   };
+//   return new Promise(requestHandler)
+// };

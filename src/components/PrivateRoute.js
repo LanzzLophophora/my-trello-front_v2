@@ -1,12 +1,14 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 const PrivateRoute = ({ user, ...props }) => {
-  if (!user) {
-    return <Redirect to="/login"/>
-  }
-  return <Route {...props} />;
+ if (_.isEmpty(user.token)) {
+   return <Redirect to="/signin"/>
+ } else {
+   return <Route {...props} />;
+ }
 };
 
 const mapStateToProps = store => ({

@@ -11,7 +11,6 @@ import { Router } from 'react-router-dom';
 import configureStore, { history } from './store';
 const store = configureStore();
 
-
 ReactDOM.render(
   <Provider store={store}>
     <ConnectedRouter history={history}>

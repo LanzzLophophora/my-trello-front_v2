@@ -1,31 +1,41 @@
 import React from 'react';
 import { Form, Icon, Input, Button } from 'antd';
+import { Redirect, withRouter } from 'react-router';
 
-import { authenticateUser } from '../store/auth/thunks';
+import { signinRequest } from '../store/auth/actions';
 import { connect } from 'react-redux';
 
 class NormalLoginForm extends React.Component {
 
+  // componentDidMount() {
+  //   const { token, history } = this.props;
+  //   token && history.push('/')
+  // }
+
   handleAuthenticate = event => {
     event.preventDefault();
-    const { authenticateUser, form } = this.props;
+    const { signinRequest, form } = this.props;
     form.validateFields((error, values) => {
-      const { email, password } = values;
+      const { login, password, remember } = values;
+      console.log("remember", remember);
       if (error) {
         return;
       }
-      authenticateUser(email, password);
+      signinRequest(login, password, remember);
     });
   };
 
   render() {
     const { getFieldDecorator } = this.props.form;
     const { error } = this.props;
+    const { token, history } = this.props;
+    console.log(token);
+    token.length && history.push('/');
     return (
       <div className="my-form">
         <Form onSubmit={this.handleAuthenticate}>
           <Form.Item>
-            {getFieldDecorator('email', {
+            {getFieldDecorator('login', {
               rules: [{ required: true, message: 'Please input your username!' }],
             })(
               <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }}/>} placeholder="Username"/>
@@ -40,10 +50,22 @@ class NormalLoginForm extends React.Component {
             )}
           </Form.Item>
           <Form.Item>
+
+              {getFieldDecorator('remember', {
+                rules: [{ required: false }],
+              })(
+                <div>
+                  <Input type="checkbox"/>
+                  <span>Remember me</span>
+                </div>
+              )}
+
+          </Form.Item>
+          <Form.Item>
             <Button type="primary" htmlType="submit" className="login-form-button">
               Log in
             </Button>
-            Or <a href="/register">register now!</a>
+            Or <a href="/signup">register now!</a>
           </Form.Item>
           {error && <p className="ant-row error">{error}</p>}
         </Form>
@@ -56,13 +78,17 @@ const LoginForm = Form.create({ name: 'normal_login' })(NormalLoginForm);
 
 const mapStateToProps = store => ({
   error: store.auth.error,
+  token: store.auth.token
 });
 
 const mapDispatchToProps = {
-  authenticateUser
+  signinRequest
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LoginForm);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(LoginForm)
+);
+

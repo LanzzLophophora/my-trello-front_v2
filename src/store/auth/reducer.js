@@ -1,57 +1,96 @@
 import {
-  SET_NAME,
-  FETCH_AUTH_REQUEST,
-  AUTH_SUCCESS,
-  AUTH_ERROR,
-  LOG_OUT
+  SIGNIN_REQUEST, SIGNIN_SUCCESS, SIGNIN_ERROR,
+  SIGNUP_REQUEST, SIGNUP_SUCCESS, SIGNUP_ERROR,
+  GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_ERROR
 } from './constants';
 
 const initialState = {
-  isLoading: true,
+  isLoading: false,
   error: '',
   user: {
-    name: '',
-    token: undefined
-  }
+    login: '',
+    _id: '',
+    token: ''
+  },
+  token: ''
 };
 
 export const auth = (state = initialState, action) => {
   switch (action.type) {
-    case FETCH_AUTH_REQUEST:
+    case SIGNIN_REQUEST:
       return {
         ...state,
         isLoading: true,
       };
 
-    case AUTH_SUCCESS:
+    case SIGNIN_SUCCESS:
       return {
         ...state,
         isLoading: false,
-        user: action.payload,
+        token: action.payload,
       };
 
-    case AUTH_ERROR:
+    case SIGNIN_ERROR:
       return {
         ...state,
         isLoading: false,
         error: action.payload,
       };
 
-    case SET_NAME:
+    case SIGNUP_REQUEST:
       return {
         ...state,
-        user: {
-          ...state.user,
-          name: action.payload
-        }
+        isLoading: true,
       };
 
-    case LOG_OUT:
+    case SIGNUP_SUCCESS:
       return {
         ...state,
         isLoading: false,
-        user: undefined,
       };
+
+    case SIGNUP_ERROR:
+      return {
+        ...state,
+        isLoading: false,
+        error: action.payload,
+      };
+
+    case GET_USER_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      };
+
+    case GET_USER_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        user: action.payload
+      };
+
+    case GET_USER_ERROR:
+      return {
+        ...state,
+        isLoading: false,
+        error: action.payload
+      };
+
+    // case SET_NAME:
+    //   return {
+    //     ...state,
+    //     user: {
+    //       ...state.user,
+    //       name: action.payload
+    //     }
+    //   };
+    //
+    // case LOG_OUT:
+    //   return {
+    //     ...state,
+    //     isLoading: false,
+    //     user: undefined,
+    //   };
 
     default:
       return state;

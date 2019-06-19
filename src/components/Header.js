@@ -1,23 +1,24 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-
-import { logOutUser } from '../store/auth/thunks';
+import _ from 'lodash';
+// import { logOutUser } from '../store/auth/thunks';
 import { Button } from 'antd';
 
 
 class Header extends Component {
   handleLogout = () => {
-    this.props.logOutUser();
+    // this.props.logOutUser();
   };
 
   render() {
+    const { user } = this.props;
     return (
       <div className="header">
-        {
-          this.props.user &&
+        this is header
+        {!_.isEmpty(user) &&
           <div className="header-content">
-            <h3>Hello, {this.props.user.nickname}!</h3>
+            <h3>Hello, {user.login}!</h3>
             <Button onClick={this.handleLogout}>Logout</Button>
           </div>
         }
@@ -28,7 +29,7 @@ class Header extends Component {
 
 Header.propTypes = {
   user: PropTypes.object.isRequired,
-  logOutUser: PropTypes.func.isRequired
+  // logOutUser: PropTypes.func.isRequired
 };
 
 const mapStateToProps = store => ({
@@ -36,7 +37,7 @@ const mapStateToProps = store => ({
 });
 
 const mapDispatchToProps = {
-  logOutUser
+  // logOutUser
 };
 
 export default connect(

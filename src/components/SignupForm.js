@@ -2,11 +2,11 @@ import React from 'react';
 
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import _ from 'lodash';
 
 import { Form, Input, Tooltip, Icon, Button } from 'antd';
 
-import { registrationUser } from '../store/auth/thunks';
-
+import { signupRequest } from '../store/auth/actions';
 class NormalRegistrationForm extends React.Component {
   state = {
     confirmDirty: false,
@@ -16,15 +16,18 @@ class NormalRegistrationForm extends React.Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    const { registrationUser, form } = this.props;
+    const { signupRequest, form } = this.props;
     form.validateFieldsAndScroll((error, values) => {
-      const { email, password, confirm, name } = values;
+      const { password, confirm, login } = values;
       if (password !== confirm) {
         this.setState({
           error: "Incorrect confirm password!"
         })
       } else {
-        registrationUser(email, password, name);
+        signupRequest(login, password);
+        setTimeout(() => {
+          !error &&  this.props.history.push('/signin');
+        }, 1000);
       }
     });
   };
@@ -34,8 +37,8 @@ class NormalRegistrationForm extends React.Component {
     this.setState({
       error
     });
-    if (user) {
-      history.push('/notes');
+    if (!_.isEmpty(user)) {
+      history.push('/');
     }
   }
 
@@ -71,14 +74,17 @@ class NormalRegistrationForm extends React.Component {
       <div className={"my-form"}>
         <Form onSubmit={this.handleSubmit}>
           <Form.Item
-            label="E-mail"
+            label={(
+              <span>
+              Nickname&nbsp;
+                <Tooltip title="What do you want others to call you?">
+                <Icon type="question-circle-o"/>
+              </Tooltip>
+            </span>
+            )}
           >
-            {getFieldDecorator('email', {
-              rules: [{
-                type: 'email', message: 'The input is not valid E-mail!',
-              }, {
-                required: true, message: 'Please input your E-mail!',
-              }],
+            {getFieldDecorator('login', {
+              rules: [{ required: true, message: 'Please input your nickname!', whitespace: true }],
             })(
               <Input/>
             )}
@@ -109,22 +115,6 @@ class NormalRegistrationForm extends React.Component {
               <Input type="password" onBlur={this.handleConfirmBlur}/>
             )}
           </Form.Item>
-          <Form.Item
-            label={(
-              <span>
-              Nickname&nbsp;
-                <Tooltip title="What do you want others to call you?">
-                <Icon type="question-circle-o"/>
-              </Tooltip>
-            </span>
-            )}
-          >
-            {getFieldDecorator('name', {
-              rules: [{ required: true, message: 'Please input your nickname!', whitespace: true }],
-            })(
-              <Input/>
-            )}
-          </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">Register</Button>
           </Form.Item>
@@ -135,7 +125,7 @@ class NormalRegistrationForm extends React.Component {
   }
 }
 
-const RegistrationForm = Form.create({ name: 'register' })(NormalRegistrationForm);
+const SignupForm = Form.create({ name: 'signup' })(NormalRegistrationForm);
 
 const mapStateToProps = store => ({
   user: store.auth.user,
@@ -143,12 +133,12 @@ const mapStateToProps = store => ({
 });
 
 const mapDispatchToProps = {
-  registrationUser
+  signupRequest
 };
 
 export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(RegistrationForm)
+  )(SignupForm)
 );

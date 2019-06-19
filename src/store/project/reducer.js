@@ -4,10 +4,11 @@ import {
   CREATE_NEW_LIST, CHANGE_LIST_TITLE, DELETE_LIST,
   ADD_NEW_CARD_TO_LIST, UPDATE_CARDLIST, DELETE_CARD,
   CHANGE_LIST_FOR_CARD, CHANGE_LIST_POSITION,
-  SET_DRAGGABLE_CARD, SET_DRAGGABLE_LIST_ID
+  SET_DRAGGABLE_CARD, SET_DRAGGABLE_LIST_ID, GET_ALL_PROJECTS_REQUEST, GET_ALL_PROJECTS_SUCCESS, GET_ALL_PROJECTS_ERROR
 } from './constants';
 
 const initialState = {
+  projects: [],
   lists: [
     {
       listId: '11111111111111111',
@@ -28,6 +29,8 @@ const initialState = {
   ],
   draggableCard: {},
   draggableListId: '',
+  error: '',
+  isLoading: false
 };
 
 export const globalField = (state = initialState, action) => {
@@ -150,6 +153,27 @@ export const globalField = (state = initialState, action) => {
       return {
         ...state,
         draggableListId: action.payload
+      };
+      // ------projects-----
+
+    case GET_ALL_PROJECTS_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      };
+
+    case GET_ALL_PROJECTS_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        projects: action.payload
+      };
+
+    case GET_ALL_PROJECTS_ERROR:
+      return {
+        ...state,
+        isLoading: false,
+        error: action.payload
       };
 
     default:

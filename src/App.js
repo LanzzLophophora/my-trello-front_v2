@@ -1,94 +1,58 @@
-// import React from 'react';
-//
-// import './App.css';
-// import GlobalFieldForLists from './containers/GlobalFieldForLists';
-//
-// function App() {
-//   return (
-//     <div className="App">
-//       <GlobalFieldForLists/>
-//     </div>
-//   );
-// }
-//
-// export default App;
-
 import React from 'react';
 import { connect } from 'react-redux';
-import { Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
+import _ from 'lodash';
+import { Spin } from 'antd';
+import TokenStorage from './store/api/token';
+import { getUserSuccess, getUserRequest, signinRequest } from './store/auth/actions';
+// import { subscribeAuthentication } from './store/auth/sagas';
 
-// import { Spin } from 'antd';
-import { api, config } from './db/api';
-
-// import { subscribeAuthentication } from '../store/auth/thunks';
-
-// import SigninForm from './components/SigninForm';
-// import SignupForm from './components/SignupForm';
-// import Header from './Header';
-
-// import PrivateRoute from "./PrivateRoute";
-// import NotesList from '../containers/NotesList';
-// import Trash from '../containers/Trash';
-// import OneNoteItem from '../containers/NoteView';
+import SigninForm from './components/SigninForm';
+import SignupForm from './components/SignupForm';
+// import Header from './components/Header';
+import PrivateRoute from './components/PrivateRoute';
+// import Home from './components/Home';
+import User from './components/User';
 
 import './App.css';
-// import GlobalFieldForLists from './containers/GlobalFieldForLists';
+import ProjectsList from './components/ProjectsList';
+import GlobalFieldForLists from './containers/GlobalFieldForLists';
 
 class App extends React.PureComponent {
 
-  state = {
-    response: ''
-  };
+  componentWillMount() {
+    // if (!TokenStorage.getItemFromSessionStorage() && !TokenStorage.getItemFromLocalStorage()) {
+    //   const { user } = this.props.auth;
+    //   console.log("user in cdm App =>", user);
+    //   if (_.isEmpty(user.token)) {
+    this.props.signinRequest()
+  }
 
-  sendRequest() {
-    const getRequest = api.get(config);
-    return getRequest('/posts');
-  };
-
-  componentDidMount() {
-    const proxyurl = "https://cors-anywhere.herokuapp.com/";
-    const url = "http://localhost:5000/api"; // site that doesn’t send Access-Control-*
-    fetch(url) // https://cors-anywhere.herokuapp.com/https://example.com
-      .then(response => response.text())
-      .then(contents => console.log(contents))
-      .catch(() => console.log("Can’t access " + url + " response. Blocked by browser?"))
-
-    //
-    // this.sendRequest()
-    //   .then(response => {
-    //     this.setState({
-    //       response
-    //       }
-    //     );
-    //     console.log('response', JSON.stringify(response));
-    //   })
-    //   .catch(error => this.setState({
-    //     error
-    //   }));
+  componentWillUnmount() {
+    TokenStorage.removeItemInSessionStorage()
   }
 
   render() {
-    const { isLoading, user } = this.props.auth;
+    const { isLoading } = this.props.auth;
 
     if (isLoading) {
       return (
         <div className="spin-wrapper">
-          {/*<Spin className="absolute-center"/>*/}
+          <Spin className="absolute-center"/>
         </div>
       )
     }
 
     return (
       <div className="app">
-        {/*{user && <Header/>}*/}
         <Switch>
-          {/*<Route exact path="/signup" component={SignupForm}/>*/}
-          {/*<Route exact path="/signin" component={SigninForm}/>*/}
-          <Route exact path="/" component="#"/>
+          <Route exact path="/signup" component={SignupForm}/>
+          <Route exact path="/signin" component={SigninForm}/>
 
-          {/*<PrivateRoute exact path="/" component={HomePage}/>*/}
-          {/*<PrivateRoute exact path="/Projects" component={ProjectsList}/>*/}
-          {/*<PrivateRoute exact path="/project/:id" component={Project}/>*/}
+          <PrivateRoute path="/:user_id" component={User}/>
+          <PrivateRoute path="/:user_id/projects" component={ProjectsList}/>
+          <PrivateRoute path="/:user_id/projects/:id" component={GlobalFieldForLists}/>
+
         </Switch>
       </div>
     );
@@ -100,7 +64,10 @@ const mapStateToProps = store => ({
 });
 
 const mapDispatchToProps = {
-  // subscribeAuthentication,
+  // getUserRequest: () => dispatch(getUserRequest),
+  // getUserSuccess: user => dispatch(getUserSuccess(user)),
+  // subscribeAuthentication
+  signinRequest
 };
 
 export default connect(
