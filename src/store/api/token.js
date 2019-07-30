@@ -1,8 +1,5 @@
 class TokenStorage {
-  static key = "user";
-  // constructor(key = "token") {
-  //   this.key = key;
-  // }
+  static key = 'user';
 
   static setItemInLocalStorage(user) {
     const serialized = JSON.stringify(user);
@@ -29,7 +26,6 @@ class TokenStorage {
   static removeItemInSessionStorage() {
     sessionStorage.removeItem(this.key);
   }
-
 }
 
 export default TokenStorage;

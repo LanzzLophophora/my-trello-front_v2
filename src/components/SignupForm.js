@@ -1,17 +1,15 @@
 import React from 'react';
-
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import _ from 'lodash';
-
 import { Form, Input, Tooltip, Icon, Button } from 'antd';
-
 import { signupRequest } from '../store/auth/actions';
+
 class NormalRegistrationForm extends React.Component {
   state = {
     confirmDirty: false,
     autoCompleteResult: [],
-    error: ""
+    error: ''
   };
 
   handleSubmit = event => {
@@ -21,12 +19,12 @@ class NormalRegistrationForm extends React.Component {
       const { password, confirm, login } = values;
       if (password !== confirm) {
         this.setState({
-          error: "Incorrect confirm password!"
-        })
+          error: 'Incorrect confirm password!'
+        });
       } else {
         signupRequest(login, password);
         setTimeout(() => {
-          !error &&  this.props.history.push('/signin');
+          !error && this.props.history.push('/signin');
         }, 1000);
       }
     });
@@ -42,7 +40,7 @@ class NormalRegistrationForm extends React.Component {
     }
   }
 
-  handleConfirmBlur = (e) => {
+  handleConfirmBlur = e => {
     const value = e.target.value;
     this.setState({
       confirmDirty: this.state.confirmDirty || !!value
@@ -71,52 +69,52 @@ class NormalRegistrationForm extends React.Component {
     const { error } = this.state;
 
     return (
-      <div className={"my-form"}>
+      <div className={'my-form'}>
         <Form onSubmit={this.handleSubmit}>
           <Form.Item
-            label={(
+            label={
               <span>
-              Nickname&nbsp;
+                Nickname&nbsp;
                 <Tooltip title="What do you want others to call you?">
-                <Icon type="question-circle-o"/>
-              </Tooltip>
-            </span>
-            )}
+                  <Icon type="question-circle-o" />
+                </Tooltip>
+              </span>
+            }
           >
             {getFieldDecorator('login', {
-              rules: [{ required: true, message: 'Please input your nickname!', whitespace: true }],
-            })(
-              <Input/>
-            )}
+              rules: [{ required: true, message: 'Please input your nickname!', whitespace: true }]
+            })(<Input />)}
           </Form.Item>
-          <Form.Item
-            label="Password"
-          >
+          <Form.Item label="Password">
             {getFieldDecorator('password', {
-              rules: [{
-                required: true, message: 'Please input your password!',
-              }, {
-                validator: this.validateToNextPassword,
-              }],
-            })(
-              <Input type="password"/>
-            )}
+              rules: [
+                {
+                  required: true,
+                  message: 'Please input your password!'
+                },
+                {
+                  validator: this.validateToNextPassword
+                }
+              ]
+            })(<Input type="password" />)}
           </Form.Item>
-          <Form.Item
-            label="Confirm Password"
-          >
+          <Form.Item label="Confirm Password">
             {getFieldDecorator('confirm', {
-              rules: [{
-                required: true, message: 'Please confirm your password!',
-              }, {
-                validator: this.compareToFirstPassword,
-              }],
-            })(
-              <Input type="password" onBlur={this.handleConfirmBlur}/>
-            )}
+              rules: [
+                {
+                  required: true,
+                  message: 'Please confirm your password!'
+                },
+                {
+                  validator: this.compareToFirstPassword
+                }
+              ]
+            })(<Input type="password" onBlur={this.handleConfirmBlur} />)}
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit">Register</Button>
+            <Button type="primary" htmlType="submit">
+              Register
+            </Button>
           </Form.Item>
           {error && <p className="ant-row error">{error}</p>}
         </Form>
@@ -129,7 +127,7 @@ const SignupForm = Form.create({ name: 'signup' })(NormalRegistrationForm);
 
 const mapStateToProps = store => ({
   user: store.auth.user,
-  error: store.auth.error,
+  error: store.auth.error
 });
 
 const mapDispatchToProps = {

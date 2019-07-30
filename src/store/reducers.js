@@ -1,11 +1,13 @@
 import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
-
 import { auth } from './auth';
-import { globalField } from './project';
+import { projects } from './projects';
+import { currentProject } from './currentProject';
 
-export default history => combineReducers({
-  router: connectRouter(history),
-  auth,
-  globalField
-});
+export default history =>
+  combineReducers({
+    router: connectRouter(history),
+    auth,
+    projects,
+    currentProject
+  });

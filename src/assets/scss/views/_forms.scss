@@ -1,0 +1,12 @@
+.my-form {
+  display: flex;
+  align-items: center;
+  form {
+    max-width: 50%;
+    min-width: 450px;
+    border-radius: 10px;
+    background-color: rgba(250, 250, 250, 0.5);
+    padding: 10px 15px;
+    margin: 2rem auto;
+  }
+}

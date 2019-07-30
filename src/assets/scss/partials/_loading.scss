@@ -1,0 +1,45 @@
+.spin-wrapper {
+  height: 100vh;
+  width: 100%;
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.7);
+  z-index: 11111;
+  top: 0;
+  left: 0;
+
+  .absolute-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.loadingBar-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+
+  .loadingBar {
+    height: 6px;
+  }
+
+  .text-fade {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+
+    &.in {
+      opacity: 1;
+    }
+  }
+}
+
+#nprogress .bar {
+  height: 6px;
+  background: $ghost-white;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px $ghost-white, 0 0 5px $ghost-white !important;
+}

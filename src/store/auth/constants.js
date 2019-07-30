@@ -10,5 +10,6 @@ export const SIGNUP_REQUEST = 'user/SIGNUP_REQUEST';
 export const SIGNUP_SUCCESS = 'user/SIGNUP_SUCCESS';
 export const SIGNUP_ERROR = 'user/SIGNUP_ERROR';
 
-// export const LOG_OUT = 'user/LOG_OUT';
-// export const SET_NAME = 'user/SET_NAME';
+export const LOG_OUT_REQUEST = 'user/LOG_OUT_REQUEST';
+export const LOG_OUT_SUCCESS = 'user/LOG_OUT_SUCCESS';
+export const LOG_OUT_ERROR = 'user/LOG_OUT_ERROR';

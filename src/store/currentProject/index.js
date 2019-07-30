@@ -1,0 +1,1 @@
+export { currentProject } from './reducer';

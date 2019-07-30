@@ -1,10 +1,10 @@
 import { apiService } from './index';
 import { defaultUrl } from './config';
 
-export const getAllUsersProjects = token => {
+export const getList = (token, projectId, listId) => {
   return apiService({
     method: 'get',
-    url: `${defaultUrl}/projects`,
+    url: `${defaultUrl}/projects/${projectId}/lists/${listId}`,
     headers: {
       authorization: token,
       'Content-Type': 'application/json'
@@ -12,24 +12,24 @@ export const getAllUsersProjects = token => {
   });
 };
 
-export const createProject = (token, projectTitle) => {
+export const getAllLists = (token, projectId) => {
+  return apiService({
+    method: 'get',
+    url: `${defaultUrl}/projects/${projectId}/lists/`,
+    headers: {
+      authorization: token,
+      'Content-Type': 'application/json'
+    }
+  });
+};
+
+export const createList = (token, projectId, listTitle) => {
   return apiService({
     method: 'post',
-    url: `${defaultUrl}/projects`,
-    headers: {
-      authorization: token,
-      'Content-Type': 'application/json'
-    },
+    url: `${defaultUrl}/projects/${projectId}/lists`,
     data: {
-      projectTitle: projectTitle
-    }
-  });
-};
-
-export const getProjectById = (token, projectId) => {
-  return apiService({
-    method: 'get',
-    url: `${defaultUrl}/projects/${projectId}`,
+      listTitle
+    },
     headers: {
       authorization: token,
       'Content-Type': 'application/json'
@@ -37,10 +37,10 @@ export const getProjectById = (token, projectId) => {
   });
 };
 
-export const deleteProject = (token, projectId) => {
+export const deleteList = (token, projectId, listId) => {
   return apiService({
     method: 'delete',
-    url: `${defaultUrl}/projects/${projectId}`,
+    url: `${defaultUrl}/projects/${projectId}/lists/${listId}`,
     headers: {
       authorization: token,
       'Content-Type': 'application/json'
@@ -48,16 +48,16 @@ export const deleteProject = (token, projectId) => {
   });
 };
 
-export const updateProject = (token, projectId, newData) => {
+export const updateList = (token, projectId, listId, listData) => {
   return apiService({
     method: 'patch',
-    url: `${defaultUrl}/projects/${projectId}`,
+    url: `${defaultUrl}/projects/${projectId}/lists/${listId}`,
+    data: {
+      ...listData
+    },
     headers: {
       authorization: token,
       'Content-Type': 'application/json'
-    },
-    data: {
-      ...newData
     }
   });
 };

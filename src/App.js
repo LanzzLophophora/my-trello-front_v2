@@ -1,58 +1,56 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect, Route, Switch } from 'react-router-dom';
-import _ from 'lodash';
-import { Spin } from 'antd';
+import { Route, Switch } from 'react-router-dom';
+import { loadProgressBar } from 'axios-progress-bar';
+
 import TokenStorage from './store/api/token';
-import { getUserSuccess, getUserRequest, signinRequest } from './store/auth/actions';
-// import { subscribeAuthentication } from './store/auth/sagas';
+import { signinRequest } from './store/auth/actions';
+import { apiService } from './store/api';
 
 import SigninForm from './components/SigninForm';
 import SignupForm from './components/SignupForm';
-// import Header from './components/Header';
+import Loading from 'components/Loading';
 import PrivateRoute from './components/PrivateRoute';
-// import Home from './components/Home';
 import User from './components/User';
+import ProjectsList from './containers/ProjectsList';
+import ProjectPage from './containers/ProjectPage';
 
-import './App.css';
-import ProjectsList from './components/ProjectsList';
-import GlobalFieldForLists from './containers/GlobalFieldForLists';
+import 'antd/dist/antd.css';
+import 'assets/css/main.css';
 
 class App extends React.PureComponent {
+  createLoadProgressBar = () => {
+    const configNprogress = {
+      showSpinner: false,
+      parent: '#loader',
+      easing: 'ease',
+      speed: 500,
+      minimum: 0.1
+    };
+
+    loadProgressBar(configNprogress, apiService);
+  };
 
   componentWillMount() {
-    // if (!TokenStorage.getItemFromSessionStorage() && !TokenStorage.getItemFromLocalStorage()) {
-    //   const { user } = this.props.auth;
-    //   console.log("user in cdm App =>", user);
-    //   if (_.isEmpty(user.token)) {
-    this.props.signinRequest()
+    this.createLoadProgressBar();
+    this.props.signinRequest();
   }
 
   componentWillUnmount() {
-    TokenStorage.removeItemInSessionStorage()
+    TokenStorage.removeItemInSessionStorage();
   }
 
   render() {
-    const { isLoading } = this.props.auth;
-
-    if (isLoading) {
-      return (
-        <div className="spin-wrapper">
-          <Spin className="absolute-center"/>
-        </div>
-      )
-    }
-
     return (
-      <div className="app">
+      <div className="content-wrapper">
+        <Loading place="auth" />
         <Switch>
-          <Route exact path="/signup" component={SignupForm}/>
-          <Route exact path="/signin" component={SigninForm}/>
+          <Route exact path="/signup" component={SignupForm} />
+          <Route exact path="/signin" component={SigninForm} />
 
-          <PrivateRoute path="/:user_id" component={User}/>
-          <PrivateRoute path="/:user_id/projects" component={ProjectsList}/>
-          <PrivateRoute path="/:user_id/projects/:id" component={GlobalFieldForLists}/>
-
+          <PrivateRoute exact path="/user" component={User} />
+          <PrivateRoute exact path="/user/projects" component={ProjectsList} />
+          <PrivateRoute exact path="/user/projects/:id" component={ProjectPage} />
         </Switch>
       </div>
     );
@@ -60,13 +58,10 @@ class App extends React.PureComponent {
 }
 
 const mapStateToProps = store => ({
-  auth: store.auth,
+  auth: store.auth
 });
 
 const mapDispatchToProps = {
-  // getUserRequest: () => dispatch(getUserRequest),
-  // getUserSuccess: user => dispatch(getUserSuccess(user)),
-  // subscribeAuthentication
   signinRequest
 };
 

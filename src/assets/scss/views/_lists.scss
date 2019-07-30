@@ -1,3 +1,5 @@
+
+
 .board::-webkit-scrollbar{
   height: 8px;
   width: 8px;
@@ -25,23 +27,23 @@
 }
 .card-list::-webkit-scrollbar-track-piece:vertical:start,
 #board::-webkit-scrollbar-track-piece:vertical:start {
-   border-radius: 4px 4px 0 0;
- }
+  border-radius: 4px 4px 0 0;
+}
 
 .card-list::-webkit-scrollbar-track-piece:vertical:end,
 #board::-webkit-scrollbar-track-piece:vertical:end {
-   border-radius: 0 0 4px 4px;
- }
+  border-radius: 0 0 4px 4px;
+}
 
 .card-list::-webkit-scrollbar-track-piece:horizontal:start,
 #board::-webkit-scrollbar-track-piece:horizontal:start {
-   border-radius: 4px 0 0 4px;
- }
+  border-radius: 4px 0 0 4px;
+}
 
 #board::-webkit-scrollbar-track-piece:horizontal:end,
 .card-list::-webkit-scrollbar-track-piece:horizontal:end {
-   border-radius: 0 4px 4px 0;
- }
+  border-radius: 0 4px 4px 0;
+}
 
 .card-list::-webkit-scrollbar {
   height: 8px;
@@ -63,9 +65,9 @@
 .card-list::-webkit-scrollbar-thumb:vertical,
 #board::-webkit-scrollbar-thumb:horizontal,
 .card-list::-webkit-scrollbar-thumb:horizontal {
-   border-radius: 4px;
-   display: block;
-   height: 48px;
+  border-radius: 4px;
+  display: block;
+  height: 48px;
   background: rgba(255, 255, 255, 0.5);
   /*background: rgba(153, 255, 0, 0.5);*/
 
@@ -76,44 +78,70 @@
 
 }
 
+.project-wrapper {
+  text-align: center;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  bottom: 0;
+  overflow-y: scroll;
 
-.App {
-  background-image: url("https://avatars.mds.yandex.net/get-pdb/985791/a7739765-a925-46be-8d02-9ad81e5cff1b/s1200");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  height: 100vh;
+  p {
+    font-size: $size24;
+    color: $glitter;
+  }
+
+  .project-card {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.7);
+    }
+  }
 }
 
 .board-wrapper {
   /*text-align: center;*/
   /*flex-grow: 1;*/
+  padding: 10px 15px;
   height: 100%;
+
+  h2 {
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 10px 15px;
+    color: $glitter;
+  }
+
+  .board {
+    user-select: none;
+    white-space: nowrap;
+    //margin-bottom: 8px;
+    overflow-x: auto;
+    //overflow-y: hidden;
+    //padding-bottom: 8px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 90px 0 20px 10px;
+    height: 100%;
+    overflow-y: scroll;
+
+
+  }
+
+  //.board::-webkit-scrollbar-button {
+  //  display: block;
+  //  height: 4px;
+  //  width: 4px;
+  //}
 }
 
-.board {
-  user-select: none;
-  white-space: nowrap;
-  margin-bottom: 8px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding-bottom: 8px;
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  padding-top: 45px;
-  /*height: 100%;*/
-  /*display: flex;*/
-  /*overflow-y: scroll;*/
-}
 
-.board::-webkit-scrollbar-button {
-   display: block;
-   height: 4px;
-   width: 4px;
-}
 
 .list-item-wrapper,
 .list-item-wrapper + .adder-new-item {
@@ -246,14 +274,14 @@
   flex-direction: column;
 }
 
-.d-flex {
-  display: flex;
-}
+//.d-flex {
+//  display: flex;
+//}
 
 
-.flex-column {
-  flex-direction: column;
-}
+//.flex-column {
+//  flex-direction: column;
+//}
 
 @keyframes App-logo-spin {
   from {

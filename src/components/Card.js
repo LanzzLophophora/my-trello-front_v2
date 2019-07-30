@@ -1,70 +1,84 @@
 import React, { useImperativeHandle, useRef } from 'react';
-import { DragSource, DropTarget } from 'react-dnd';
+import { connect } from 'react-redux';
 import ItemTypes from './ItemTypes';
 import { Button } from '@material-ui/core';
-import { connect } from 'react-redux';
+import { DragSource, DropTarget } from 'react-dnd';
 
-import { changeListForCard, deleteCard, setDraggableCard } from '../store/project/actions';
+import {
+  changeListForCard,
+  deleteCardRequest,
+  setDraggableCard,
+  updateListRequest,
+  setStartDragListId
+} from '../store/currentProject/actions';
 
 const Card = React.forwardRef(
-  ({ value, id, active, listId, lists, draggableCard,
-     connectDragSource, connectDropTarget, setDraggableCard,
-     deleteCard, changeListForCard,
-     index, isOver }, ref) => {
+  (
+    {
+      cardTitle,
+      _id,
+      listId,
+      projectId,
+      draggableCard,
+      user,
+      connectDragSource,
+      connectDropTarget,
+      deleteCardRequest
+    },
+    ref
+  ) => {
     const elementRef = useRef(null);
     connectDragSource(elementRef);
     connectDropTarget(elementRef);
-    const opacity = id === draggableCard.id ? 0.1 : 1;
+    const opacity = _id === draggableCard.id ? 0.1 : 1;
 
     useImperativeHandle(ref, () => ({
-      getNode: () => elementRef.current,
+      getNode: () => elementRef.current
     }));
 
     const handleDeleteCard = () => {
-      deleteCard(id, listId)
+      deleteCardRequest(user.token, projectId, listId, _id);
     };
 
     return (
-      <div
-        ref={elementRef}
-        style={Object.assign({}, { opacity })}
-        className="card-item"
-      >
-        <span>{value}</span>
+      <div ref={elementRef} style={Object.assign({}, { opacity })} className="card-item">
+        <span>{cardTitle}</span>
         <Button onClick={handleDeleteCard}>
-          <i className="material-icons">
-            delete
-          </i>
+          <i className="material-icons">delete</i>
         </Button>
       </div>
-    )
-  },
+    );
+  }
 );
 
 const mapStateToProps = store => ({
-  lists: store.globalField.lists,
-  draggableCard: store.globalField.draggableCard
+  lists: store.currentProject.lists,
+  draggableCard: store.currentProject.draggableCard,
+  startDragListId: store.currentProject.startDragListId,
+  user: store.auth.user
 });
 
 const mapDispatchToProps = dispatch => ({
-  deleteCard: (id, listId) => dispatch(deleteCard(id, listId)),
+  deleteCardRequest: (token, projectId, listId, cardId) =>
+    dispatch(deleteCardRequest(token, projectId, listId, cardId)),
   changeListForCard: (dragListId, hoverListId, hoverCardIndex) =>
     dispatch(changeListForCard(dragListId, hoverListId, hoverCardIndex)),
-  setDraggableCard: card => dispatch(setDraggableCard(card))
+  setDraggableCard: card => dispatch(setDraggableCard(card)),
+  updateListRequest: (token, projectId, listId, data) =>
+    dispatch(updateListRequest(token, projectId, listId, data)),
+  setStartDragListId: listId => dispatch(setStartDragListId(listId))
 });
 
-
-const CardWithDnD =
-  DropTarget(
+const CardWithDnD = DropTarget(
   ItemTypes.CARD,
   {
     hover(props, monitor, component) {
       if (!component) {
-        return null
+        return null;
       }
       const node = component.getNode();
       if (!node) {
-        return null
+        return null;
       }
 
       const hoverCardIndex = props.index;
@@ -79,17 +93,18 @@ const CardWithDnD =
 
       if (dragListId === hoverListId) {
         if (
-            props.lists.find(list => list.listId === dragListId).cardList
-            .filter(card => card.id === props.draggableCard.id).length
-          ) {
+          props.lists
+            .find(list => list._id === dragListId)
+            .cardList.filter(card => card._id === props.draggableCard._id).length
+        ) {
           if (dragCardIndex === hoverCardIndex) {
-            return
+            return;
           }
           if (dragCardIndex < hoverCardIndex && hoverClientY < hoverMiddleY) {
-            return
+            return;
           }
           if (dragCardIndex > hoverCardIndex && hoverClientY > hoverMiddleY) {
-            return
+            return;
           }
           props.moveCard(dragCardIndex, hoverCardIndex);
         } else {
@@ -102,62 +117,87 @@ const CardWithDnD =
         }
       } else if (dragListId !== hoverListId) {
         if (
-          !props.lists.find(list => list.listId === hoverListId).cardList
-            .filter(card => card.id === props.draggableCard.id).length
+          !props.lists
+            .find(list => list._id === hoverListId)
+            .cardList.filter(card => card._id === props.draggableCard.id).length
         ) {
           props.changeListForCard(dragListId, hoverListId, hoverCardIndex);
           props.setDraggableCard({
             ...props.draggableCard,
-            index: hoverCardIndex|0,
+            index: hoverCardIndex | 0,
             listId: hoverListId
           });
           monitor.getItem().listId = hoverListId;
-          return
+          return;
         } else {
           if (dragCardIndex === hoverCardIndex) {
-            return
+            return;
           }
           if (dragCardIndex < hoverCardIndex && hoverClientY < hoverMiddleY) {
-            return
+            return;
           }
           if (dragCardIndex > hoverCardIndex && hoverClientY > hoverMiddleY) {
-            return
+            return;
           }
           props.moveCard(dragCardIndex, hoverCardIndex);
         }
       }
-    },
+    }
   },
   connect => ({
-    connectDropTarget: connect.dropTarget(),
-  }),
+    connectDropTarget: connect.dropTarget()
+  })
 )(
   DragSource(
     ItemTypes.CARD,
     {
-      beginDrag:  (props) => {
-          props.setDraggableCard({
-            id: props.id,
-            value: props.value,
-            listId: props.listId,
-            index: props.index
-          });
-          return ({
-            ...props
-          })
+      beginDrag: props => {
+        props.setStartDragListId(props.listId);
+        props.setDraggableCard({
+          _id: props._id,
+          cardTitle: props.cardTitle,
+          listId: props.listId,
+          index: props.index
+        });
+        return {
+          ...props
+        };
       },
-      endDrag: (props) => {
-        props.setDraggableCard({})
-      },
+      endDrag: (props, monitor) => {
+        const {
+          lists,
+          user,
+          projectId,
+          startDragListId,
+          draggableCard,
+          updateListRequest,
+          setStartDragListId,
+          setDraggableCard
+        } = props;
+
+        const hoverList = lists.find(list => list._id === monitor.getItem().listId);
+        if (startDragListId !== hoverList._id) {
+          const cardList = lists
+            .filter(list => list._id === startDragListId)[0]
+            .cardList.filter(card => card._id !== draggableCard._id);
+          updateListRequest(user.token, projectId, startDragListId, { cardList });
+          updateListRequest(user.token, projectId, hoverList._id, { cardList: hoverList.cardList });
+        } else {
+          updateListRequest(user.token, projectId, hoverList._id, { cardList: hoverList.cardList });
+        }
+
+        setStartDragListId('');
+        setDraggableCard({});
+      }
     },
     (connect, monitor) => ({
       connectDragSource: connect.dragSource(),
-      isDragging: monitor.isDragging(),
-    }),
+      isDragging: monitor.isDragging()
+    })
   )(Card)
 );
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CardWithDnD)
+)(CardWithDnD);
